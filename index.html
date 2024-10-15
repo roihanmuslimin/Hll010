@@ -1,47 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Giveaway lazyblox</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Form</title>
 </head>
 <body>
-  <input type="text" id="inputField" placeholder="Masukkan username">
-  <button onclick="saveData()">Simpan</button>
-
-  <table id="userTable">
-    <thead>
-      <tr>
-        <th>Username</th>
-        <th>UID</th>
-      </tr>
-    </thead>
-    <tbody id="tableData">
-    </tbody>
-  </table>
-
-  <script>
-    // ... (kode JavaScript sebelumnya)
-
-    function loadData() {
-      fetch('/loadData')
-        .then(response => response.json())
-        .then(data => {
-          const tableBody = document.getElementById('tableData');
-          tableBody.innerHTML = '';
-          data.forEach(user => {
-            const row = document.createElement('tr');
-            const usernameCell = document.createElement('td');
-            const uidCell = document.createElement('td');
-            usernameCell.textContent = user.username;
-            uidCell.textContent = user.uid;
-            row.appendChild(usernameCell);
-            row.appendChild(uidCell);
-            tableBody.appendChild(row);
-          });
-        })
-        .catch(error => {
-          console.error('Error:', error);
+    <h1>Input Form</h1>
+    <form id="inputForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <button type="submit">Submit</button>
+    </form>
+    <h2>Table</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>UID</th>
+            </tr>
+        </thead>
+        <tbody id="dataTable">
+        </tbody>
+    </table>
+    <script>
+        document.getElementById('inputForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const response = await fetch('/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username })
+            });
+            const result = await response.json();
+            const table = document.getElementById('dataTable');
+            const row = table.insertRow();
+            row.insertCell(0).innerText = result.username;
+            row.insertCell(1).innerText = result.uid;
         });
-    }
-  </script>
+    </script>
 </body>
 </html>
